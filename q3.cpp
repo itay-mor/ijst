@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-void game() {
+void run_game() {
   string input;
   bool end = false;
   int max = 1000 * 1000 * 1000, min = -max, guess, turns = 1;
@@ -9,21 +9,21 @@ void game() {
   while (true) {
     guess = (min + max) / 2;
     cout << guess << endl << ">> ";
-    cin >> input;
+    getline(cin, input);
     if (input == "up") {
       min = guess + 1;
       turns++;
     } else if (input == "down") {
       max = guess - 1;
       turns++;
-    } else if (input == "got") {
-      cout << "Secseeded in " << turns << " turns." << endl;
+    } else if (input == "got it!") {
+      cout << "Succeeded in " << turns << " turns." << endl;
       return;
     }
   }
 }
 
 int main() {
-  game();
+  run_game();
   return 0;
 }

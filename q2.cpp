@@ -8,18 +8,18 @@ constexpr int kDistFromPrivet = 777;
 constexpr int kDistFromLondon = 500;
 constexpr int kHagridMultiplier = 3;
 
-double opTimeOfDurr(double speed, bool monday, bool hagrid) {
+double opTimeOfDur(double speed, bool monday, bool hagrid) {
   /*
-   * Gets the mop speed, a boolian variable which is true if it's monday and a
-   * boolian variable which is true if hagrid came.
+   * Gets the mop speed, a boolean variable which is true if it's monday and a
+   * boolean variable which is true if hagrid came.
    * Returns the minimal time to howarts.
    */
 
   double actual_speed = speed;
   double distance = kDistFromPrivet;
   /* When hagrid comes it's always better to go with him, even if it's monday
-   * because when it's monday and also hargid came - with hagrid the time is
-   * 259/speed and from london the time is 500/speed wich is allways bigger. So
+   * because when it's monday and also hagrid came - with hagrid the time is
+   * 259/speed and from london the time is 500/speed which is always bigger. So
    * first we check if hagrid came and only if he didn't we check if it's
    * monday.
    */
@@ -42,11 +42,7 @@ double opTimeOfDurr(double speed, bool monday, bool hagrid) {
 }
 
 void expect_result(double speed, bool monday, bool hagrid, double expected) {
-  /*
-   * Geting the paramiters of opTimeOfDurr func and the expected result and
-   * asserting an eror if the fuction returned unexpected value.
-   */
-  double actual = opTimeOfDurr(speed, monday, hagrid);
+  double actual = opTimeOfDur(speed, monday, hagrid);
   assert(actual == expected);
 }
 
@@ -63,12 +59,15 @@ void run_tests() {
   expect_result(777 * 3600 / 31.0, false, false, 0.01);
 }
 
-int main() {
-  // run_tests();
-
+void run() {
   double speed;
   string day;
   string hagrid;
   cin >> speed >> day >> hagrid;
-  cout << opTimeOfDurr(speed, (day == "monday"), (hagrid == "yes")) << endl;
+  cout << opTimeOfDur(speed, (day == "monday"), (hagrid == "yes")) << endl;
+}
+
+int main() {
+  // run_tests();
+  run();
 }
