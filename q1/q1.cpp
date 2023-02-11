@@ -1,55 +1,34 @@
 #include <cassert>
 #include <iostream>
+#include <sstream>
 #include <vector>
 using namespace std;
 
-constexpr int kNotFound = -1000 * 1000 * 1000; // Smallest posible value.
+constexpr int kNotFound = -1000 * 1000 * 1000;  // Smallest possible value.
 
-int find_second_biggest(const int arr[], int arr_length) {
+int find_second_biggest(const vector<int>& numbers) {
   /*
-  Gets an array and the length of it.
+  Gets a vector.
   Returns the second biggest number.
   */
- 
+
   int curr_biggest =
       kNotFound;  // setting the current biggest to the smallest possible value.
   int prev_biggest = kNotFound;  // setting the previous biggest to the
                                  // smallest possible value.
-  for (int i = 0; i < arr_length; i++) {
-    if (arr[i] >= curr_biggest) {
+  for (int num : numbers) {
+    if (num >= curr_biggest) {
       prev_biggest = curr_biggest;
-      curr_biggest = arr[i];
-    } else if (arr[i] >= prev_biggest) {
-      prev_biggest = arr[i];
+      curr_biggest = num;
+    } else if (num >= prev_biggest) {
+      prev_biggest = num;
     }
   }
   return prev_biggest;
 }
 
-int find_second_biggest2(const vector<int> arr, int arr_length) {
-  /*
-  Gets an array and the length of it.
-  Returns the second biggest number.
-  */
- 
-  int curr_biggest =
-      kNotFound;  // setting the current biggest to the smallest possible value.
-  int prev_biggest = kNotFound;  // setting the previous biggest to the
-                                 // smallest possible value.
-  for (int i = 0; i < arr_length; i++) {
-    if (arr[i] >= curr_biggest) {
-      prev_biggest = curr_biggest;
-      curr_biggest = arr[i];
-    } else if (arr[i] >= prev_biggest) {
-      prev_biggest = arr[i];
-    }
-  }
-  return prev_biggest;
-}
-
-
-void expect_result(const vector<int> &numbers, int expected) {
-  int actual = find_second_biggest(numbers.data(), numbers.size());
+void expect_result(const vector<int>& numbers, int expected) {
+  int actual = find_second_biggest(numbers);
   assert(actual == expected);
 }
 
@@ -71,13 +50,19 @@ int main() {
   // run_tests();
 
   int n;
-  string temp;
-  cin >> n;    // Geting a number and sving it in n.
-  vector<int> arr;  // Creating an array in size n.
-  while (std::getline(cin, temp, ' ')) {
-    arr.push_back(stoi(temp));
+  cin >> n;             // Getting a number and saving it in n.
+  vector<int> numbers;  // Creating an array in size n.
+
+  string line;
+  getline(cin >> ws, line);
+  stringstream ss(line);
+  int number;
+
+  while (ss >> number) {
+    numbers.push_back(number);
   }
 
+  assert(numbers.size() == n);
 
-  cout << endl << find_second_biggest2(arr, n) << endl;
+  cout << endl << find_second_biggest(numbers) << endl;
 }
