@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+
 using namespace std;
 
 constexpr int kNotFound = -1000 * 1000 * 1000;  // Smallest possible value.
@@ -46,9 +47,7 @@ void run_tests() {
   expect_result({5000799, 17, -2000000, 50, 5000799}, 5000799);
 }
 
-int main() {
-  // run_tests();
-
+void run() {
   int n;
   cin >> n;             // Getting a number and saving it in n.
   vector<int> numbers;  // Creating an array in size n.
@@ -65,4 +64,9 @@ int main() {
   assert(numbers.size() == n);
 
   cout << endl << find_second_biggest(numbers) << endl;
+}
+
+int main() {
+  // run_tests();
+  run();
 }
