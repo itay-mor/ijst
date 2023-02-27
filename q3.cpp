@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-void run_game() {
+void run_q3() {
   string input;
   bool end = false;
   int max = 1000 * 1000 * 1000, min = -max, guess, turns = 1;
@@ -24,6 +24,6 @@ void run_game() {
 }
 
 int main() {
-  run_game();
+  run_q3();
   return 0;
 }
