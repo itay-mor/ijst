@@ -94,9 +94,59 @@ vector<rational> sort(const vector<rational>& rationals, unsigned int m) {
   return merge(de_buckets);
 }
 
+std::chrono::_V2::steady_clock::rep benchmark(unsigned int n, unsigned int m,
+                                              unsigned int count = 100000) {
+  std::chrono::_V2::steady_clock::rep time;
+  vector<rational> rationals;
+  rationals.reserve(n);
+  for (; count > 0; count--) {
+    rationals.clear();
+    for (int i = 0; i < n; i++) {
+      int numerator = rand() % (2 * n - 1) + (1 - n);
+      int denominator = rand() % (m - 1) + 1;
+      rationals.emplace_back(numerator, denominator);
+    }
+
+    auto before = chrono::steady_clock::now();
+    vector<rational> sorted = sort(rationals, m);
+    auto after = chrono::steady_clock::now();
+
+    time += chrono::duration_cast<chrono::nanoseconds>(after - before).count();
+  }
+  return time;
+}
+
+void benchmark_test_n() {
+  cout << "n, time" << endl;
+  std::chrono::_V2::steady_clock::rep first = 0;
+  for (int n = 50; n < 2000; n++) {
+    auto time = benchmark(n, 30);
+    if (first == 0) {
+      first = time;
+    };
+    cout << n << ", " << time - first << endl;
+  }
+}
+
+void benchmark_test_m() {
+  cout << "m, time" << endl;
+  std::chrono::_V2::steady_clock::rep first = 0;
+  for (int m = 30; m < 2000; m++) {
+    auto time = benchmark(3000, m);
+    if (first == 0) {
+      first = time;
+    };
+    cout << m << ", " << time - first << endl;
+  }
+}
+
 int main() {
   vector<rational> rationals;
   srand(time(0));
+
+  benchmark_test_n();
+  benchmark_test_m();
+  return 0;
   int m = 5, n = 23;
   for (int i = 0; i < n; i++) {
     int numerator = rand() % (2 * n - 1) + (1 - n);
