@@ -1,3 +1,5 @@
+// https://cses.fi/problemset/task/2183
+
 #include <iostream>
 #include <vector>
 #include <cstdint>
@@ -5,29 +7,42 @@
 
 using namespace std;
 
+vector<int64_t> read_sequence() {
+  int64_t size;
+  cin >> size;
 
-
-int main() {
-  int64_t temp;
-  vector<int64_t> coins;
-  int64_t n; cin >> n;
-  for (int64_t i = 0; i < n; i++) {
-    cin >> temp;
-    coins.push_back(temp);
+  int64_t number;
+  vector<int64_t> sequence;
+  sequence.reserve(size);
+  for (int64_t i = 0; i < size; i++) {
+    cin >> number;
+    sequence.push_back(number);
   }
+
+  return sequence;
+}
+
+int64_t run() {
+  vector<int64_t> coins = read_sequence();
 
   sort(coins.begin(), coins.end());
 
-
-  int64_t max_following_sum = 0;
-  int64_t i = 0;
+  int64_t next_coin_sum = 1;
   for (int64_t coin : coins) {
-    if (coin > max_following_sum+1) {
+    if (coin > next_coin_sum) {
+      // Our next coin is larger than the next sum we're trying to find.
+      // It means we won't be able to find a set of coins that will have this sum, so we break.
       break;
     }
-    max_following_sum += coin;
+    // We found a coin that is smaller or equal to the sum we're looking for. It means
+    // we could also add this coin, and look for a larger sum.
+    next_coin_sum += coin;
   }
   
-  cout << max_following_sum+1 << endl;
+  return next_coin_sum;
+}
 
+int main() {
+  cout << run() << endl;
+  return 0;
 }

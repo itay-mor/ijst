@@ -1,9 +1,11 @@
+// https://cses.fi/problemset/task/1652
+
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-int main() {
+string run() {
   int n;
   cin >> n;
   int q;
@@ -32,7 +34,7 @@ int main() {
     }
   }
 
-  string to_print = "";
+  string answers = "";
   for (int i = 0; i < q; i++) {
     int x1, y1, x2, y2;
     cin >> y1 >> x1 >> y2 >> x2;
@@ -40,10 +42,13 @@ int main() {
                  - down_right_trees[y2][x1 - 1]    //
                  - down_right_trees[y1 - 1][x2]    //
                  + down_right_trees[y2][x2];
-    to_print += to_string(answer) + "\n";
+    answers += to_string(answer) + "\n";
   }
 
-  cout << to_print;
+  return answers;
+}
 
+int main() {
+  cout << run() << endl;
   return 0;
 }
