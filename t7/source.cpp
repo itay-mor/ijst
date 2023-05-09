@@ -116,4 +116,6 @@ int main() {
   cout << run_q1() << endl << endl;
   cout << run_q2() << endl << endl;
   cout << run_q3() << endl << endl;
+  
+  return 0;
 }
