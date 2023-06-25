@@ -9,11 +9,6 @@
 using namespace std;
 
 vector<int64_t> read_vector(int64_t size) {
-  /**
-   * Gets a size.
-   * Return a vector from the user's input
-  */
-  
   vector<int64_t> vec;
   vec.reserve(size);
 
