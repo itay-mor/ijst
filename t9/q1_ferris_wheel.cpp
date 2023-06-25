@@ -8,6 +8,8 @@
 
 using namespace std;
 
+// Reads a vector from input.
+// Gets the vector size and returns the vector.
 vector<int64_t> read_vector(int64_t size) {
   vector<int64_t> vec;
   vec.reserve(size);
@@ -22,6 +24,9 @@ vector<int64_t> read_vector(int64_t size) {
   return vec;
 }
 
+
+// Gets the vector of the children's weights, the maximum weight of the gondolas.
+// Returns the minmal amount of gondolas needed for all the children.
 int64_t run(vector<int64_t>& weights, int64_t max_weight) {
   int64_t min_gondolas = 0, left = 0, right = weights.size()-1;
   
@@ -36,7 +41,6 @@ int64_t run(vector<int64_t>& weights, int64_t max_weight) {
   min_gondolas += (right-left+1);
   return min_gondolas;
 }
-
 
 int main() {
   int64_t n, max_weight; cin >> n >> max_weight;
