@@ -1,5 +1,5 @@
 // Time complexity: O(n^2)
-// Storge complexity O(n)
+// Memory complexity O(n)
 
 #include <iostream>
 #include <vector>
