@@ -1,4 +1,5 @@
 // Time complexity: O(n*log(n))
+// Memory complexity: O(n)
 
 #include <iostream>
 #include <vector>
