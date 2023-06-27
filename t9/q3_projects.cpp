@@ -24,8 +24,7 @@ vector<project> read_projects() {
 }
 
 int64_t run(vector<project>& projects) {
-  vector<int64_t> dp(projects.size(), -1);
-  dp.push_back(0);
+  vector<int64_t> dp(projects.size());
 
   sort(projects.begin(), projects.end());
 
