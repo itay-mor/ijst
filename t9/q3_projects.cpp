@@ -12,7 +12,6 @@ using project = tuple<int64_t, int64_t, int64_t>;
 
 vector<project> read_projects() {
   int64_t n; cin >> n;
-  project temp;
   int64_t start_day, end_day, reward;
   vector<project> projects(n);
   for (int64_t i = 0; i < n; i++) {
