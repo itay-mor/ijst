@@ -1,3 +1,5 @@
+// https://cses.fi/problemset/task/1090
+
 // Time complexity: O(n*log(n))
 // Memory complexity: O(n)
 
@@ -10,7 +12,7 @@ using namespace std;
 
 // Reads a vector from input.
 // Gets the vector size and returns the vector.
-vector<int64_t> read_vector(int64_t size) {
+vector<int64_t> read_vector(size_t size) {
   vector<int64_t> vec;
   vec.reserve(size);
 
@@ -25,7 +27,7 @@ vector<int64_t> read_vector(int64_t size) {
 
 // Gets the vector of the children's weights and the maximum weight of the
 // gondolas. Returns the minimal amount of gondolas needed for all the children.
-int64_t run(vector<int64_t>& weights, int64_t max_weight) {
+int64_t solve_ferris_wheel(vector<int64_t>& weights, int64_t max_weight) {
   int64_t min_gondolas = 0, left = 0, right = weights.size() - 1;
 
   sort(weights.begin(), weights.end());
@@ -49,10 +51,12 @@ int64_t run(vector<int64_t>& weights, int64_t max_weight) {
   return min_gondolas;
 }
 
-int main() {
+void run_ferris_wheel() {
   int64_t n, max_weight;
   cin >> n >> max_weight;
   auto weights = read_vector(n);
 
-  cout << run(weights, max_weight) << endl;
+  cout << solve_ferris_wheel(weights, max_weight) << endl;
 }
+
+int main() { run_ferris_wheel(); }

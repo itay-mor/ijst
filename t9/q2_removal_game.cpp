@@ -1,5 +1,7 @@
+// https://cses.fi/problemset/task/1097
+
 // Time complexity: O(n^2)
-// Memory complexity O(n)
+// Memory complexity: O(n)
 
 #include <cstdint>
 #include <iostream>
@@ -7,7 +9,7 @@
 
 using namespace std;
 
-vector<int64_t> read_vector(int size) {
+vector<int64_t> read_vector(size_t size) {
   vector<int64_t> vec;
   vec.reserve(size);
 
@@ -20,11 +22,8 @@ vector<int64_t> read_vector(int size) {
   return vec;
 }
 
-int64_t run() {
-  int n;
-  cin >> n;
-  auto numbers = read_vector(n);
-
+int64_t solve_removal_game(const vector<int64_t>& numbers) {
+  size_t n = numbers.size();
   vector<int64_t> calculating_vector =
       (n % 2 == 0) ? vector<int64_t>(n, 0) : numbers;
 
@@ -46,6 +45,11 @@ int64_t run() {
   return calculating_vector[0];
 }
 
-int main() { 
-  cout << run() << endl; 
+void run_removal_game() {
+  int n;
+  cin >> n;
+  auto numbers = read_vector(n);
+  cout << solve_removal_game(numbers) << endl;
 }
+
+int main() { run_removal_game(); }
