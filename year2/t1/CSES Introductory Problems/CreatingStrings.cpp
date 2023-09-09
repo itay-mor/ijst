@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "misc-no-recursion"
 //
 // Created by Itay on 08/09/2023.
 //
