@@ -1,6 +1,7 @@
 //
 // Created by Itay Mor on 11/09/2023.
 //
+
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -8,22 +9,10 @@ using namespace std;
 constexpr int CHESSBOARD_SIZE = 8;
 constexpr int QUEENS_NUMBER = 8;
 
-using QueensSet = set<tuple<int, int>>;
-//using Chessboard = array<array<bool, 8>, 8>;
 using Chessboard = array<string, CHESSBOARD_SIZE>;
-//constexpr Chessboard chess_init = {
-//    {true, true, true, true, true, true, true, true},
-//    {true, true, true, true, true, true, true, true},
-//    {true, true, true, true, true, true, true, true},
-//    {true, true, true, true, true, true, true, true},
-//    {true, true, true, true, true, true, true, true},
-//    {true, true, true, true, true, true, true, true},
-//    {true, true, true, true, true, true, true, true}
-//    {true, true, true, true, true, true, true, true}
-//};
 
 Chessboard read_chessboard() {
-  Chessboard chessboard{{}};
+  Chessboard chessboard;
   for (int i = 0; i < CHESSBOARD_SIZE; ++i) {
     string row;
     cin >> row;
@@ -33,48 +22,52 @@ Chessboard read_chessboard() {
   return chessboard;
 }
 
-Chessboard mark_attacked_squares(tuple<int, int> coordinates, Chessboard chessboard) {
-  auto [x, y] = coordinates;
-  for (int i = 0; i < CHESSBOARD_SIZE; ++i) {
-    chessboard[i][x] = '*';
-    if (x + i - y < CHESSBOARD_SIZE && x + i - y >= 0) chessboard[i][x + i - y] = '*';
-    if (x - i + y < CHESSBOARD_SIZE && x - i + y >= 0) chessboard[i][x - i + y] = '*';
-  }
+Chessboard mark_attacked_squares(tuple<int, int> queen, Chessboard chessboard) {
+  auto [queen_x, queen_y] = queen;
 
-  for (int i = 0; i < CHESSBOARD_SIZE; ++i) chessboard[y][i] = '*';
+  // Marking the queen's column.
+  for (int y = 0; y < CHESSBOARD_SIZE; ++y) chessboard[y][queen_x] = '*';
+
+  // Marking the queen's row.
+  for (int x = 0; x < CHESSBOARD_SIZE; ++x) chessboard[queen_y][x] = '*';
+
+  // Marking the queen's diagonals.
+  for (int y = 0, x = queen_x - queen_y; y < CHESSBOARD_SIZE; ++y, ++x) {
+    if (0 <= x && x < CHESSBOARD_SIZE) chessboard[y][x] = '*';
+  }
+  for (int y = 0, x = queen_x + queen_y; y < CHESSBOARD_SIZE; ++y, --x) {
+    if (0 <= x && x < CHESSBOARD_SIZE) chessboard[y][x] = '*';
+  }
 
   return chessboard;
 }
 
-int64_t run_chessboards_and_queens(Chessboard chessboard, QueensSet& queens_set, vector<QueensSet>& queens_sets, int queens_num = QUEENS_NUMBER) {
-  if (queens_num == 0) {
-    queens_sets.push_back(queens_set);
-    queens_set.clear();
-    return 1;
-  }
+int64_t number_of_solutions(Chessboard chessboard,
+                            int queens_num = QUEENS_NUMBER,
+                            tuple<int, int> last_queen = {0, 0}) {
+  if (queens_num == 0) return 1;
 
-  int64_t total = 0;
-  for (int i = 0; i < CHESSBOARD_SIZE; ++i) {
-    for (int j = 0; j < CHESSBOARD_SIZE; ++j) {
-      if (chessboard[i][j] == '*') continue;
+  int64_t num_of_solutions = 0;
+  auto [last_queen_x, last_queen_y] = last_queen;
 
-      queens_set.emplace(make_tuple(j, i));
-      if (find(queens_sets.begin(), queens_sets.end(), queens_set) != queens_sets.end()) continue;
+  for (int y = last_queen_y; y < CHESSBOARD_SIZE; ++y) {
+    for (int x = 0; x < CHESSBOARD_SIZE; ++x) {
 
-      int64_t count = 1;
-      Chessboard new_chessboard = mark_attacked_squares(make_tuple(j, i), chessboard);
+      if (chessboard[y][x] == '*') continue;
 
-      count *= run_chessboards_and_queens(new_chessboard, queens_set, queens_sets, queens_num - 1);
-      total += count;
+      if (y == last_queen_y && x < last_queen_x) continue;
+
+      Chessboard new_chessboard = mark_attacked_squares({x, y}, chessboard);
+      num_of_solutions +=
+          number_of_solutions(new_chessboard, queens_num - 1, {x, y});
     }
   }
 
-  return total;
+  return num_of_solutions;
 }
 
 int main() {
   Chessboard chessboard = read_chessboard();
-  QueensSet queens_set = {};
-  vector<QueensSet> queens_sets = {};
-  cout << run_chessboards_and_queens(chessboard, queens_set, queens_sets);
+
+  cout << number_of_solutions(chessboard);
 }
