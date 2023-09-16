@@ -8,117 +8,91 @@ constexpr int GRID_SIZE = 7;
 
 using namespace std;
 
-int64_t number_of_paths(string& path) {
-  // Stop condition
-  vector<tuple<int, int>> used_squares = {{0, 0}};
-  tuple<int, int> start = {0, 0};
+int calls = 0;
 
-  int64_t solutions = 0;
-  int first_unknown_index = -1;
-  for (int i = 0; i < path.length(); ++i) {
-    if (path[i] == '?') {
-      first_unknown_index = i;
-      break;
-    }
-    auto& [x, y] = start;
-    switch (path[i]) {
-      case 'R':start = {x + 1, y};
-        break;
-      case 'L':start = {x - 1, y};
-        break;
-      case 'U':start = {x, y - 1};
-        break;
-      case 'D':start = {x, y + 1};
-        break;
-    }
+bool illegal_path_hit(const array<array<bool, GRID_SIZE + 2>, GRID_SIZE + 2>& grid,
+                      const tuple<unsigned int, unsigned int>& curr_square) {
+  auto [x, y] = curr_square;
 
-    if (x < 0 || GRID_SIZE <= x ||
-        y < 0 || GRID_SIZE <= y) {
-      return 0;
-    }
-    for (const auto& used_square : used_squares) {
-      if (used_square == start) return 0;
-    }
-
-    used_squares.push_back(start);
+  if (grid[y][x + 1] && grid[y][x - 1] &&
+      !grid[y + 1][x] && !grid[y - 1][x]) {
+    return true;
   }
 
-  if (first_unknown_index == -1) return (start == make_tuple(0, GRID_SIZE - 1)) ? 1 : 0;
+  if (grid[y + 1][x] && grid[y - 1][x] &&
+      !grid[y][x + 1] && !grid[y][x - 1]) {
+    return true;
+  }
 
-  path[first_unknown_index] = 'R';
-  solutions += number_of_paths(path);
-
-  path[first_unknown_index] = 'L';
-  solutions += number_of_paths(path);
-
-  path[first_unknown_index] = 'D';
-  solutions += number_of_paths(path);
-
-  path[first_unknown_index] = 'U';
-  solutions += number_of_paths(path);
-
-  path[first_unknown_index] = '?';
-
-  return solutions;
+  return false;
 }
 
 int64_t number_of_paths2(const string& path,
-                         array<array<bool, GRID_SIZE>, GRID_SIZE> used_squares,
-                         tuple<int, int> start_square = {0, 0},
-                         const int& start_index = 0) {
+                         array<array<bool, GRID_SIZE + 2>, GRID_SIZE + 2>& grid,
+                         tuple<unsigned int, unsigned int> curr_square = {1, 1},
+                         unsigned int index = 0) {
+  calls++;
+  // Stop conditions:
+  auto& [x, y] = curr_square;
 
-  auto& [x, y] = start_square;
-  if (x >= GRID_SIZE || x < 0 || y >= GRID_SIZE || y < 0) return 0;
+  // Already used square.
+  if (grid[y][x])
+    return 0;
 
-  int64_t solution = 0;
-  int first_unknown = -1;
-  for (int i = start_index; i < path.length(); ++i) {
-    if (path[i] == '?') {
-      first_unknown = i;
-      break;
-    }
-    switch (path[i]) {
-      case 'R':start_square = {x + 1, y};
-        break;
-      case 'L':start_square = {x - 1, y};
-        break;
-      case 'U':start_square = {x, y - 1};
-        break;
-      case 'D':start_square = {x, y + 1};
-        break;
-    }
-
-    if (x >= GRID_SIZE || x < 0 || y >= GRID_SIZE || y < 0) return 0;
-    if (used_squares[y][x]) return 0;
-
-    used_squares[y][x] = true;
+  if (index == path.length() && curr_square == make_tuple(1, GRID_SIZE)) {
+    return 1;
   }
 
-  if (first_unknown == -1) return (start_square == make_tuple(0, GRID_SIZE - 1)) ? 1 : 0;
+  if (index == path.length() || curr_square == make_tuple(1, GRID_SIZE)) {
+    return 0;
+  }
 
-  solution +=
-      number_of_paths2(path, used_squares, {x + 1, y}, start_index + 1); // Right
+  if (illegal_path_hit(grid, curr_square)) {
+    return 0;
+  }
 
-
-  solution +=
-      number_of_paths2(path, used_squares, {x - 1, y}); // Left
-
-  solution +=
-      number_of_paths2(path, used_squares, {x, y + 1}); // Down
-
-
-  solution +=
-      number_of_paths2(path, used_squares, {x, y - 1}); // Down
-
-
-
-
-  return solution;
+  grid[y][x] = true;
+  const char curr_direction = path[index];
+  index++;
+  int64_t solutions;
+  switch (curr_direction) {
+    case 'R':
+      solutions = number_of_paths2(path, grid, {x + 1, y}, index);
+      break;
+    case 'L':
+      solutions = number_of_paths2(path, grid, {x - 1, y}, index);
+      break;
+    case 'D':
+      solutions = number_of_paths2(path, grid, {x, y + 1}, index);
+      break;
+    case 'U':
+      solutions = number_of_paths2(path, grid, {x, y - 1}, index);
+      break;
+    case '?':
+      solutions = number_of_paths2(path, grid, {x + 1, y}, index) // Right
+          + number_of_paths2(path, grid, {x - 1, y}, index) // Left
+          + number_of_paths2(path, grid, {x, y + 1}, index) // Down
+          + number_of_paths2(path, grid, {x, y - 1}, index); // Up
+      break;
+    default:
+      cerr << "Unknown direction (" << curr_direction << ")" << endl;
+      return 0;
+  }
+  grid[y][x] = false;
+  return solutions;
 }
 
 int main() {
   string path;
   cin >> path;
 
-  cout << number_of_paths2(path, {});
+  array<array<bool, GRID_SIZE + 2>, GRID_SIZE + 2> grid = {};
+  for (int i = 0; i < GRID_SIZE + 1; i++) {
+    grid[0][i] = true;
+    grid[GRID_SIZE + 1][i] = true;
+    grid[i][0] = true;
+    grid[i][GRID_SIZE + 1] = true;
+  }
+  cout << number_of_paths2(path, grid);
+  cerr << calls << endl;
 }
