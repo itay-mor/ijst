@@ -2,54 +2,63 @@
 // Created by Itay Mor on 15/09/2023.
 //
 #include <bits/stdc++.h>
-#define CALC(counter)  (9*pow10(counter-1)*(counter))
 
 using namespace std;
 
 int64_t pow10(int64_t n) {
   int64_t result = 1;
-  for (int64_t i = 0; i < n; ++i) result*=10;
+  for (int64_t i = 0; i < n; ++i) result *= 10;
 
   return result;
 }
 
-int64_t run_query(int64_t n) {
-  int64_t chars_before_closest_k_digits_number = 0;
-  int64_t counter = 1;
+int64_t length_of_k_digit_numbers(int64_t k) {
+  return 9 * pow10(k - 1) * (k);
+}
 
-  int64_t i = 9, j = 0;
-  while (i < n) {
-    counter++;
-    i += (int64_t) CALC(counter);
-    j += (int64_t) CALC(counter-1);
-    chars_before_closest_k_digits_number = j;
-    cerr << i << " " << j << endl;
-
+int64_t get_number_digit(int64_t number, int64_t place_from_right, int64_t digits_in_number) {
+  int64_t number_of_shifts = place_from_right - 1;
+  for (int64_t i = 0; i < number_of_shifts; i++) {
+    number /= 10;
   }
-  cerr << "counter: " << counter << endl;
-  int64_t dist = n-chars_before_closest_k_digits_number;
-  int64_t digit_type = pow10(1 + (counter - (dist%counter))%counter);
-  cerr << "type: "<< digit_type << endl;
-
-  int64_t digit = (pow10(counter-1) + ((dist-1)/counter));
-  cerr << "digit: " << digit << endl;
-  digit%=digit_type;
-  digit -= digit%(digit_type/10);
-  digit/= (digit_type/10);
+  int64_t digit = number % 10;
   return digit;
 }
 
-void run_digit_queries(int64_t queries_number) {
-  int64_t query;
-  for (; queries_number > 0; queries_number--) {
-    cin >> query;
-    cout << run_query(query) << endl;
+int64_t run_query(int64_t digit_index) {
+  int64_t chars_before_closest_k_digits_number = 0;
+  int64_t digits_in_number = 1;
+
+  // Calculate chars_before_closest_k_digits_number.
+  int64_t i = 9;
+  while (i < digit_index) {
+    digits_in_number++;
+    i += length_of_k_digit_numbers(digits_in_number);
+    chars_before_closest_k_digits_number += length_of_k_digit_numbers(digits_in_number - 1);
+  }
+  int64_t index_of_first_k_digit_num = chars_before_closest_k_digits_number + 1;
+  // Zero-based distance.
+  int64_t dist = digit_index - index_of_first_k_digit_num;
+  int64_t place_from_left = dist % digits_in_number; // 0-based.
+  int64_t place_from_right = digits_in_number - place_from_left; // 1-based.
+
+  int64_t number = pow10(digits_in_number - 1) + (dist / digits_in_number);
+  int64_t digit = get_number_digit(number, place_from_right, digits_in_number);
+
+  return digit;
+}
+
+void run_digit_queries(int64_t number_of_queries) {
+  int64_t digit_index;
+  for (; number_of_queries > 0; number_of_queries--) {
+    cin >> digit_index;
+    cout << run_query(digit_index) << endl;
   }
 }
 
 int main() {
-  int64_t q;
-  cin >> q;
+  int64_t number_of_queries;
+  cin >> number_of_queries;
 
-  run_digit_queries(q);
+  run_digit_queries(number_of_queries);
 }
