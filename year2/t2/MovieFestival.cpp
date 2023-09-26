@@ -7,27 +7,6 @@ using namespace std;
 
 using Movie = pair<int64_t, int64_t>;
 
-//struct Movie {
-//  int64_t _start_hour;
-//  int64_t _end_hour;
-//
-//  Movie() {
-//
-//  }
-//  Movie(int64_t start_hour, int64_t end_hour) {
-//    _start_hour = start_hour;
-//    _end_hour = end_hour;
-//  }
-//
-//  bool operator<(const Movie& other) const {
-//    return _end_hour < other._start_hour;
-//  }
-//
-//  bool operator>(const Movie& other) const {
-//    return _start_hour > other._end_hour;
-//  }
-//};
-
 vector<Movie> read_movies(size_t size) {
   Movie input_movie;
   vector<Movie> movies(size);
@@ -40,7 +19,7 @@ vector<Movie> read_movies(size_t size) {
 }
 
 void run_movie_festival() {
-  size_t n;
+  int64_t n;
   cin >> n;
   auto movies = read_movies(n);
   vector<int64_t> dp(n + 1, 0);
