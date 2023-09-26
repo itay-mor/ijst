@@ -5,9 +5,13 @@
 #include <iostream>
 #include <vector>
 #include <cstdint>
-#define CHOOSE2(n) ((n*(n+1))/2)
+#define CHOOSE2(n) ((n*(n-1))/2)
 
 using namespace std;
+
+inline int positive_modulo(int64_t k, int n) {
+  return (k % n + n) % n;
+}
 
 vector<int64_t> create_buckets(int64_t modulus, vector<int64_t> vec) {
   vector<int64_t> return_vec(modulus, 0);
@@ -52,33 +56,30 @@ void run_hogsmead_trip_a() {
   cout << solution;
 }
 
-void run_hogsmead_trip_b() {
-  int64_t n;
+void run_hogsmeade_trip_b() {
+  int n;
   cin >> n;
   auto vec = read_vector(n);
   vector<int64_t> partial_sums_vector(n);
-  partial_sums_vector[0] = vec[0];
+  partial_sums_vector[0] = positive_modulo(vec[0], n);
   for (size_t i = 1; i < n; i++) {
-    partial_sums_vector[i] = (partial_sums_vector[i-1] + vec[i]) % n;
-    if (partial_sums_vector[i] % n < 0) {
-      partial_sums_vector[i] += n;
-    }
+    partial_sums_vector[i] = positive_modulo(partial_sums_vector[i-1] + vec[i], n);
   }
 
   int64_t solution = 0;
-  auto sorted_partial_sums = create_buckets(n, partial_sums_vector);
-  for (auto element : sorted_partial_sums) {
-    solution += CHOOSE2(element);
+  auto buckets = create_buckets(n, partial_sums_vector);
+  for (auto bucket : buckets) {
+    solution += CHOOSE2(bucket);
   }
 
-  solution += sorted_partial_sums[0];
+  solution += buckets[0];
 
   cout << solution;
 }
 
 
 int main() {
-  run_hogsmead_trip_b();
+  run_hogsmeade_trip_b();
 }
 
 // 2 5 10 15 20
