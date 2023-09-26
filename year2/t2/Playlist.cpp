@@ -22,22 +22,26 @@ void run_playlist() {
 
   const auto songs = read_vector(n);
 
-  map<int64_t, vector<int64_t>::const_iterator> id_to_iterator = {{*songs.begin(), songs.begin()}};
+  set<int64_t> used_ids = {*songs.begin()};
 
   auto left_it = songs.begin();
   auto right_it = songs.begin();
 
-  int64_t max_length = 0, curr_length = 1;
+  int64_t max_length = 1, curr_length = 1;
   while (++right_it < songs.end()) {
-    auto it = id_to_iterator.find(*right_it);
-    if (it != id_to_iterator.end()) {
-      left_it = it->second + 1;
-      id_to_iterator.clear();
-      for (auto i = left_it; i <= right_it; i ++) {
-        id_to_iterator.emplace(*i, i);
+    auto it = used_ids.find(*right_it);
+    if (it != used_ids.end()) {
+      while (true) {
+        if((*left_it) == *right_it) {
+          used_ids.erase(*left_it);
+          left_it++;
+          break;
+        }
+        used_ids.erase(*left_it);
+        left_it++;
       }
     }
-    id_to_iterator.emplace(*right_it, right_it);
+    used_ids.emplace(*right_it);
 
     curr_length = right_it-left_it + 1;
     if (curr_length > max_length) {
