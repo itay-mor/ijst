@@ -4,7 +4,7 @@
 
 #include <bits/stdc++.h>
 
-constexpr int64_t MODULUS  = 10000019;
+constexpr int64_t MODULUS = 10000019;
 
 using namespace std;
 
@@ -23,7 +23,8 @@ int64_t modular_power(int64_t base, int64_t exponent, int64_t modulus) {
 }
 
 void run_cat_play() {
-  int64_t n; cin >> n;
+  int64_t n;
+  cin >> n;
   int64_t a, b, c;
   for (int i = 0; i < n; ++i) {
     cin >> a >> b >> c;
