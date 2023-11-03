@@ -31,16 +31,19 @@ void run_brut_force() {
 
   ldouble minimal_diff = 10*10*10 + 1;
   ldouble curr_diff;
+  ldouble tmp1, tmp2;
   for (size_t i = 0; i < n; ++i) {
-    for (size_t j = 0; j < n; ++j) {
-      for (size_t k = 0; k < n; k++) {
-        curr_diff = abs((handles[i] + handles[j] + handles[k] - s));
-        if (curr_diff < minimal_diff) minimal_diff = curr_diff;
+    tmp1 = handles[i] - s;
+    for (size_t j = i; j < n; ++j) {
+      tmp2 = tmp1 + handles[j];
+      for (size_t k = j; k < n; ++k) {
+        curr_diff = abs((tmp2 + handles[k]));
+        minimal_diff = min(curr_diff, minimal_diff);
       }
     }
   }
 
-  cout <<minimal_diff;
+  cout << minimal_diff;
 }
 
 void solve() {
@@ -89,6 +92,6 @@ cout << setprecision(2) << minimal_diff;
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(nullptr);
-  solve();
+  run_brut_force();
 
 }
