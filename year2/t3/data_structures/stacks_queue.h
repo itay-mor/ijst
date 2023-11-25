@@ -6,6 +6,7 @@
 #define IJST_YEAR2_T3_DATA_STRUCTURES_STACKS_QUEUE_H_
 
 #endif //IJST_YEAR2_T3_DATA_STRUCTURES_STACKS_QUEUE_H_
+
 template<typename T>
 class stacks_queue {
 
