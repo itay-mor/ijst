@@ -13,6 +13,14 @@ class stacks_queue {
  private:
   std::stack<T> s1_, s2_;
   T front_, back_;
+
+  void move_to_s2_() {
+    while (!s1_.empty()) {
+      s2_.push(s1_.top());
+      s1_.pop();
+    }
+  }
+
  public:
   // Constructor
   stacks_queue() =  default; // Default
@@ -25,11 +33,17 @@ class stacks_queue {
    * @ret: void
    */
   void push(T element) {
-    static int counter = 0;
-    if (counter == 0) front_ = element;
-    s1_.push(element);
+    static bool first_push = true;
     back_ = element;
-    counter++;
+
+    if (first_push) {
+      front_ = element;
+      s2_.push(element);
+      return;
+    }
+
+    s1_.push(element);
+    first_push = false;
   }
 
   /*
@@ -37,19 +51,12 @@ class stacks_queue {
  * @ret: the popped element
  */
   T pop() {
-    // Move all elements from s1_ to s2_ (Inverses the order of s1_).
-    if (s2_.empty()) {
-      while (!s1_.empty()) {
-        s2_.push(s1_.top());
-        s1_.pop();
-      }
-    }
-
     // pop the top element of s2_.
     T return_value = s2_.top();
     s2_.pop();
-    if (!s2_.empty())
-      front_ = s2_.top();
+    if (s2_.empty())  move_to_s2_(); // If s2_ is empty, fill it for the next pop.
+    front_ = s2_.top();
+
 
     return return_value;
   }
