@@ -38,9 +38,11 @@ class stacks_queue {
  */
   T pop() {
     // Move all elements from s1_ to s2_ (Inverses the order of s1_).
-    while (!s1_.empty()) {
-      s2_.push(s1_.top());
-      s1_.pop();
+    if (s2_.empty()) {
+      while (!s1_.empty()) {
+        s2_.push(s1_.top());
+        s1_.pop();
+      }
     }
 
     // pop the top element of s2_.
@@ -48,12 +50,6 @@ class stacks_queue {
     s2_.pop();
     if (!s2_.empty())
       front_ = s2_.top();
-
-    // Move all the elements back to s1_.
-    while (!s2_.empty()) {
-      s1_.push(s2_.top());
-      s2_.pop();
-    }
 
     return return_value;
   }

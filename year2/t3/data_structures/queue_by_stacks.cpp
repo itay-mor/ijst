@@ -12,5 +12,8 @@ int main() {
   std::cout << "Back: " << q.back() << ", Front: "<< q.front() << std::endl;
   std::cout << q.pop() << " ";  // {1 2}
   std::cout << q.pop() << " ";  // {2}
+  q.push(11);           // {2 11}
+  std::cout << q.pop() << " ";         // {11}
   std::cout << q.pop();         // {}
+
 }
