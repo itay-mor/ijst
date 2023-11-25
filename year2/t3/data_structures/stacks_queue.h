@@ -9,7 +9,6 @@
 
 template<typename T>
 class stacks_queue {
-
  private:
   std::stack<T> s1_, s2_;
   T front_, back_;
@@ -22,65 +21,40 @@ class stacks_queue {
   }
 
  public:
-  // Constructor
   stacks_queue() =  default; // Default
-  stacks_queue(std::stack<T> stack_init) : s1_(stack_init) {} // Init with stuck
 
-
-
-  /*
-   * @args: <template T> element
-   * @ret: void
-   */
   void push(T element) {
     static bool first_push = true;
     back_ = element;
-
+    // Handle first push (push to s2_, define front_).
     if (first_push) {
       front_ = element;
       s2_.push(element);
+      first_push = false;
       return;
     }
-
     s1_.push(element);
-    first_push = false;
   }
 
-  /*
- * @args: void
- * @ret: the popped element
- */
   T pop() {
-    // pop the top element of s2_.
     T return_value = s2_.top();
-    s2_.pop();
-    if (s2_.empty())  move_to_s2_(); // If s2_ is empty, fill it for the next pop.
-    front_ = s2_.top();
-
+    s2_.pop();                        // pop the top element of s2_.
+    if (s2_.empty())  move_to_s2_();  // If s2_ is empty, fill it for the next pop.
+    if (!empty()) front_ = s2_.top(); // Update front_ if exists.
 
     return return_value;
   }
 
-
-  /*
-  * @args: void
-  * @ret: the size of the queue.
-  */
   inline size_t size() {
     return s1_.size() + s2_.size();
   }
-
   inline bool empty() {
     return s1_.empty() && s2_.empty();
   }
-
   inline T front() {
     return front_;
   }
-
   inline T back() {
     return back_;
   }
 };
-
-
