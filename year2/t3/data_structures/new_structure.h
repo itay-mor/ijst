@@ -22,19 +22,23 @@ class mean_set {
       s1.insert(to_add);
     }
     while (s2.size() + 1 < s1.size()) {
-      T to_add = *(s1.end()-1);
-      s1.erase(s1.end()-1);
+      T to_add = *(last_s1_it());
+      s1.erase(last_s1_it());
       s2.insert(to_add);
     }
   }
-  std::set<T>::iterator last_s1_it() {
+  typename std::set<T>::iterator last_s1_it() {
     auto it = s1.end();
     it--;
     return it;
   }
  public:
   void push(T element) {
-    if (element > *(s1.end()-1))
+    if (s1.empty()) {
+      s1.insert(element);
+      return;
+    }
+    if (element > *(last_s1_it()))
       s2.insert(element);
     else
       s1.insert(element);
@@ -43,7 +47,7 @@ class mean_set {
   }
 
   void pop(T element) {
-    if (element > *(s1.end()-1))
+    if (element > *(last_s1_it()))
       s2.erase(element);
     else
       s1.erase(element);
@@ -52,6 +56,6 @@ class mean_set {
   }
 
   T get_mean() {
-    return *(s1.end()-1);
+    return *(last_s1_it());
   }
 };
