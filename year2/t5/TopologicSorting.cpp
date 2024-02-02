@@ -39,6 +39,33 @@ void topological_sorting() {
 
 }
 
+void topological_sorting2() {
+  queue<int> zero_in_degree;
+  vector<int> in_degree(graph.size() + 1);
+  for (int i = 1; i <= graph.size(); ++i) {
+    in_degree[i] = graph[i].size();
+    if (in_degree[i] == 0) zero_in_degree.push(i);
+  }
+
+  while (!zero_in_degree.empty()) {
+    auto v = zero_in_degree.front();
+    zero_in_degree.pop();
+    sorted.push_back(v);
+
+    for (auto adj : graph[v])
+      if (--in_degree[adj] == 0)
+        zero_in_degree.push(adj);
+
+  }
+  if (sorted.size() != graph.size() - 1)
+    cout << "IMPOSSIBLE";
+  else
+    for (auto v : sorted)
+      cout << v << " ";
+
+
+}
+
 int main() {
   int n, m;
   cin >> n >> m;

@@ -26,13 +26,13 @@ struct PQNode {
 };
 
 vector<vector<Edge>> graph;
-vector<pair<ll, ll>> dist; // {dist, arrived_from}
+vector<ll> dist;
 
 void dijkstra(ll start_node = 1) {
   priority_queue<PQNode> pq; // {node, suggested distance}
-  dist.assign(graph.size(), {INF, 0});
+  dist.assign(graph.size(), INF);
 
-  dist[start_node].first = 0;
+  dist[start_node] = 0;
   pq.emplace(start_node, 0);
 
   while (!pq.empty()) {
@@ -43,14 +43,14 @@ void dijkstra(ll start_node = 1) {
     // Nodes can be inserted to the PQ multiple times.
     // If we already handled the node before, it means now it
     // might have a worse distance, so we can skip it.
-    if (closest_node_dist > dist[closest_node].first) continue;
+    if (closest_node_dist > dist[closest_node]) continue;
 
     for (const auto& e : graph[closest_node]) {
       auto weight = e.weight;
       auto adjNode = e.targetNode;
-      ll alt_dist = dist[closest_node].first + weight;
-      if (alt_dist < dist[adjNode].first) {
-        dist[adjNode] = {alt_dist, closest_node};
+      ll alt_dist = dist[closest_node] + weight;
+      if (alt_dist < dist[adjNode]) {
+        dist[adjNode] = alt_dist;
         pq.emplace(adjNode, alt_dist);
       }
     }
@@ -63,21 +63,15 @@ int main() {
   cout.tie(nullptr);
   ll n, m;
   cin >> n >> m;
-  graph = vector<vector<Edge>>(n + 1);
+  graph = vector<vector<Edge>>(2*n + 1);
   ll flight_source, flight_target, duration;
   for (ll i = 0; i < m; ++i) {
     cin >> flight_source >> flight_target >> duration;
-    graph[flight_source].emplace_back(flight_target, duration);
+    graph[flight_source].emplace_back(flight_target, duration); // Didn't use coupon yet.
+    graph[flight_source].emplace_back(flight_target + n, duration/2); // Using Coupon.
+    graph[flight_source + n].emplace_back(flight_target + n, duration); // Used coupon.
   }
 
   dijkstra();
-
-  ll max_flight = 0, curr_flight;
- for (ll i = n; i != 1; i = dist[i].second) {
-   curr_flight = dist[i].first - dist[dist[i].second].first;
-   if (curr_flight > max_flight) max_flight = curr_flight;
- }
-
- ll coupon = (max_flight + 1)/2;
- cout << dist[n].first - coupon;
+  cout << dist[2 * n];
 }
