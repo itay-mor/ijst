@@ -28,7 +28,6 @@ int find_deepest(int node = 0) {
 }
 
 int find_diameter(int node = 0) {
-  find_deepest();
   if (children[node].empty()) return 0;
   int ans = 0;
   for (auto child : children[node])
@@ -37,14 +36,14 @@ int find_diameter(int node = 0) {
   int max_depth1 = 0, max_depth2 = 0;
   for (auto child : children[node]) {
     if (depth[child] + 1 > max_depth1) {
-      max_depth1 = depth[child] + 1;
       max_depth2 = max_depth1;
+      max_depth1 = depth[child] + 1;
     } else if (depth[child] + 1 > max_depth2) {
       max_depth2 = depth[child] + 1;
     }
   }
 
-  ans = max(ans, max_depth1 + max_depth2 + 1);
+  ans = max(ans, max_depth1 + max_depth2);
   return ans;
 }
 
@@ -63,5 +62,6 @@ int main() {
     tree[temp2 - 1].push_back(temp1 - 1);
   }
   rooting();
+  find_deepest();
   cout << find_diameter();
 }

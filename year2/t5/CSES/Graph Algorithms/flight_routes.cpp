@@ -7,7 +7,7 @@ using namespace std;
 
 using ll = long long;
 
-constexpr ll INF = numeric_limits<ll>::max();
+constexpr ll INF = numeric_limits<ll>::max() - 2000000000;
 
 struct Edge {
   ll targetNode, weight;
@@ -18,44 +18,27 @@ struct Edge {
   }
 };
 
-struct EdgeHash {
-  std::size_t operator()(const Edge& e) const {
-    return std::hash<ll>()(e.targetNode ^ e.weight);
-  }
-};
-
 struct PQNode {
   ll nodeId, dist;
 
   PQNode(ll id, ll d) : nodeId(id), dist(d) {}
-  inline bool operator<(const PQNode& other) const {
+  inline bool operator>(const PQNode& other) const {
     return dist > other.dist;
+  }
+  inline bool operator<(const PQNode& other) const {
+    return dist < other.dist;
   }
 };
 
-vector<unordered_set<Edge, EdgeHash>> graph, flipped_graph;
-vector<ll> dist;
-int n, m;
+vector<vector<Edge>> graph;
+vector<priority_queue<ll>> dist;
+int n, m, k;
 
-void remove_best_route() {
-  ll node = n;
-  while (node != 1) {
-    for (auto e : flipped_graph[node]) {
-      if (dist[e.targetNode] + e.weight == dist[node]) {
-        graph[e.targetNode].erase({node, e.weight});
-        flipped_graph[node].erase(e);
-        node = e.targetNode;
-        break;
-      }
-    }
-  }
-}
 
 void dijkstra(ll start_node = 1) {
-  priority_queue<PQNode> pq; // {Suggested dist, node}
-  dist.assign(graph.size(), INF);
+  priority_queue<PQNode, vector<PQNode>, greater<>> pq; // {Suggested dist, node}
 
-  dist[start_node] = 0;
+  dist[start_node].push(0);
   pq.emplace(start_node, 0);
 
   while (!pq.empty()) {
@@ -66,14 +49,18 @@ void dijkstra(ll start_node = 1) {
     // Nodes can be inserted to the PQ multiple times.
     // If we already handled the node before, it means now it
     // might have a worse distance, so we can skip it.
-    if (closest_node_dist > dist[closest_node]) continue;
+    if (closest_node_dist > dist[closest_node].top()) continue;
 
     for (const auto& e : graph[closest_node]) {
       auto weight = e.weight;
       auto adjNode = e.targetNode;
-      ll alt_dist = dist[closest_node] + weight;
-      if (alt_dist < dist[adjNode]) {
-        dist[adjNode] = alt_dist;
+      ll alt_dist = closest_node_dist + weight;
+      if (dist[adjNode].size() < k) {
+        dist[adjNode].push(alt_dist);
+        pq.emplace(adjNode, alt_dist);
+      } else if (alt_dist < dist[adjNode].top()) {
+        dist[adjNode].pop();
+        dist[adjNode].push(alt_dist);
         pq.emplace(adjNode, alt_dist);
       }
     }
@@ -81,19 +68,26 @@ void dijkstra(ll start_node = 1) {
 }
 
 int main() {
-  int k;
   cin >> n >> m >> k;
   graph.resize(n + 1);
-  flipped_graph.resize(n + 1);
+  dist.resize(n + 1);
   int a, b, c;
   while (m--) {
     cin >> a >> b >> c;
-    graph[a].emplace(b, c);
-    flipped_graph[b].emplace(a, c);
+    graph[a].emplace_back(b, c);
   }
-  while (k--) {
-    dijkstra();
-    cout << dist[n] << " ";
-    remove_best_route();
+  for (int i = 2; i <= n; ++i)
+    dist[i].push(INF);
+
+  dijkstra();
+  vector<ll> k_best_routes;
+  while (!dist[n].empty()) {
+    k_best_routes.push_back(dist[n].top());
+    dist[n].pop();
   }
+  reverse(k_best_routes.begin(), k_best_routes.end());
+  for (auto route : k_best_routes)
+    cout << route << " ";
+
+
 }
